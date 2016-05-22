@@ -46,7 +46,6 @@ function TouchController:ctor()
     self:addChild(btn)
     btn:setKeypadEnabled(true)
     btn:addNodeEventListener(cc.KEYPAD_EVENT,function(e)
-          dump(e)
           if e.code == 59 then 
               self.jumpVec.y = 20
           end 
