@@ -41,31 +41,31 @@ function TouchController:ctor()
     self:setTouchMode(cc.TOUCH_MODE_ALL_AT_ONCE)
     self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event) return self:onTouchHandler(event) end)
 
-    local btn
-    btn = cc.ui.UIPushButton.new() :setButtonLabel(cc.ui.UILabel.new({text = " ", size = 64}))
-    self:addChild(btn)
-    btn:setKeypadEnabled(true)
-    btn:addNodeEventListener(cc.KEYPAD_EVENT,function(e)
-          if e.code == 59 then 
-              self.jumpVec.y = 20
-          end 
-
-          if e.code == 26 then 
-            self.state = "left"
-          elseif e.code == 27 then 
-            self.state = "right"
-          end
-    end)
+    -- local btn
+    -- btn = cc.ui.UIPushButton.new() :setButtonLabel(cc.ui.UILabel.new({text = " ", size = 64}))
+    -- self:addChild(btn)
+    -- btn:setKeypadEnabled(true)
+    -- btn:addNodeEventListener(cc.KEYPAD_EVENT,function(e)
+    --       if e.code == 59 then
+    --           self.jumpVec.y = 20
+    --       end
+    --
+    --       if e.code == 26 then
+    --         self.state = "left"
+    --       elseif e.code == 27 then
+    --         self.state = "right"
+    --       end
+    -- end)
 end
 
 function TouchController:onRender()
-  if self.state == "right" then
-    self.moveVec.x = 1
-  elseif self.state == "left" then
-     self.moveVec.x = -1
-  elseif self.state == "jump" then
-   
-  end
+  -- if self.state == "right" then
+  --   self.moveVec.x = 1
+  -- elseif self.state == "left" then
+  --    self.moveVec.x = -1
+  -- elseif self.state == "jump" then
+  --
+  -- end
 end
 
 function TouchController:onTouchHandler(event)
@@ -74,8 +74,10 @@ function TouchController:onTouchHandler(event)
   local touchID
   for k,v in pairs(event.points) do
       point = v
-      touchID = k
+      touchID = v.id
   end
+
+  -- print("touchID::",touchID)
   local rightRect = self.btnRight:getBoundingBox();
   local leftRect = self.btnLeft:getBoundingBox();
   local jumpRect = self.btnJump:getBoundingBox();
@@ -95,8 +97,12 @@ function TouchController:onTouchHandler(event)
   if cc.rectContainsPoint(jumpRect , cc.p(point.x , point.y)) then
     self.jumpID = touchID
   end
-  if event.name == "began" then
+  print("self.jumpID",self.jumpID)
+  print("self.moveID",self.moveID)
+  print("touchID",touchID)
+  if event.name == "began" or event.name == "added" then
     if self.jumpID == touchID then
+      print("jump")
       self.jumpID = -1
       self.jumpVec.y = 20
     end

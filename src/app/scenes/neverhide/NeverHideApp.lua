@@ -368,7 +368,7 @@ function NeverHideApp:setRoleByPosX(posx)
 end
 
 function NeverHideApp:update(dt)
-  self.touchController:onRender()
+  -- self.touchController:onRender()
   local isHit = self:onRoleCollisionCeil(self.role)
   --
   -- if isHit then
