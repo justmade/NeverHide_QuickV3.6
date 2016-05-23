@@ -10,6 +10,8 @@ BlockData.NORMAL = "normal"
 
 BlockData.DIAMOND = "diamond"
 
+BlockData.WALLCONTROL = "wall_control"
+
 
 function BlockData:ctor (rect , type , colorID , tiledID)
     self.blockRect = rect

@@ -26,6 +26,7 @@ function NeverHideApp:ctor()
     self.currentLevel = 2;
     self.playerSpeed = Vector2D.new(5,0)
     self.moveSpeed = Vector2D.new(0,0)
+    self.wallCloseSpeed = 2
     --天花板下降的距离
     self.ceilOffset = 0;
 
@@ -173,6 +174,8 @@ function NeverHideApp:findGround()
             self.downGroundRects[index % self.levelWidth +1] = bd
           elseif itemInfo.type == "color_change" then
             bd = BlockData.new(r,BlockData.DIAMOND,itemInfo.colorID,tiledId)
+          elseif itemInfo.type == "wall_control" then
+            bd = BlockData.new(r,BlockData.WALLCONTROL,itemInfo.colorID,tiledId)
           else
             bd = BlockData.new(r,BlockData.NORMAL,itemInfo.colorID,tiledId);
           end
@@ -203,10 +206,10 @@ function NeverHideApp:findUpGround()
 end
 
 function NeverHideApp:closingUpGroud()
-    self.ceilOffset = self.ceilOffset - 1;
+    self.ceilOffset = self.ceilOffset - self.wallCloseSpeed;
     for i,v in ipairs(self.upAllGroundRects) do
       local rect = v:getRect();
-      rect.y = rect.y - 1
+      rect.y = rect.y - self.wallCloseSpeed
     end
 end
 
@@ -228,8 +231,15 @@ function NeverHideApp:onRoleCollisionGround()
     if colorID ~= self.role.colorID then
       local state = Collision.rectIntersectsRect(cc.rect(self.role:getPositionX() - 20 , self.role:getPositionY() - 5 , 40,30),blockRect)
       --与道具的碰撞检测
-      if state ~= "nothing" and blockType == BlockData.DIAMOND then
-          self.role:setRoleColor(colorID)
+      if state ~= "nothing" and (blockType == BlockData.DIAMOND or blockType == BlockData.WALLCONTROL) then
+          if blockType == BlockData.DIAMOND then
+            self.role:setRoleColor(colorID)
+          elseif blockType == BlockData.WALLCONTROL then
+            -- self.role:setRoleColor(colorID)
+            self.wallCloseSpeed = self.wallCloseSpeed * -1
+          end
+
+
           table.remove(self.allGroundRects,i)
           self.renderContainer:removeChild(v)
           local px = blockRect.x / self.cellGap + 1;
@@ -282,7 +292,7 @@ function NeverHideApp:checkGroundState(rect)
     return true
   elseif tonumber(itemInfo.colorID) == tonumber(self.role.colorID) then
     return true
-  elseif itemInfo.type == "color_change" then
+  elseif itemInfo.type == "color_change" or itemInfo.type == "wall_control" then
     return true
   else
     return false
