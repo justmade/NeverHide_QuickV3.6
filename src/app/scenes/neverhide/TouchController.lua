@@ -41,31 +41,32 @@ function TouchController:ctor()
     self:setTouchMode(cc.TOUCH_MODE_ALL_AT_ONCE)
     self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event) return self:onTouchHandler(event) end)
 
-    -- local btn
-    -- btn = cc.ui.UIPushButton.new() :setButtonLabel(cc.ui.UILabel.new({text = " ", size = 64}))
-    -- self:addChild(btn)
-    -- btn:setKeypadEnabled(true)
-    -- btn:addNodeEventListener(cc.KEYPAD_EVENT,function(e)
-    --       if e.code == 59 then
-    --           self.jumpVec.y = 20
-    --       end
-    --
-    --       if e.code == 26 then
-    --         self.state = "left"
-    --       elseif e.code == 27 then
-    --         self.state = "right"
-    --       end
-    -- end)
+    local btn
+    btn = cc.ui.UIPushButton.new() :setButtonLabel(cc.ui.UILabel.new({text = " ", size = 64}))
+    self:addChild(btn)
+    btn:setKeypadEnabled(true)
+    btn:addNodeEventListener(cc.KEYPAD_EVENT,function(e)
+      print("keyboard")
+          if e.code == 59 then
+              self.jumpVec.y = 20
+          end
+    
+          if e.code == 26 then
+            self.state = "left"
+          elseif e.code == 27 then
+            self.state = "right"
+          end
+    end)
 end
 
 function TouchController:onRender()
-  -- if self.state == "right" then
-  --   self.moveVec.x = 1
-  -- elseif self.state == "left" then
-  --    self.moveVec.x = -1
-  -- elseif self.state == "jump" then
-  --
-  -- end
+  if self.state == "right" then
+    self.moveVec.x = 1
+  elseif self.state == "left" then
+     self.moveVec.x = -1
+  elseif self.state == "jump" then
+  
+  end
 end
 
 function TouchController:onTouchHandler(event)
