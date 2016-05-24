@@ -38,6 +38,10 @@ function BlockData:ctor (rect , type , dataInfo , tiledID)
 
 end
 
+function BlockData:getPropID ()
+    return self.propID
+end
+
 function BlockData:getRect()
     return self.blockRect
 end

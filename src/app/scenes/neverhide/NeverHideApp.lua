@@ -10,6 +10,7 @@ local Vector2D    = require("app.scenes.neverhide.Vector2D")
 local TouchController = import(".TouchController")
 local Collision   = require("app.data.Collision")
 local BlockData   = require("app.data.BlockData")
+require("app.data.ElementsConfig")
 
 
 function NeverHideApp:ctor()
@@ -226,6 +227,7 @@ function NeverHideApp:onRoleCollisionGround()
     local blockRect = v:getRect();
     local blockType = v:getType();
     local colorID   = v:getColorID();
+    local propID    = v:getPropID();
 
     --只检测颜色与主角不一样的情况
     if colorID ~= self.role.colorID then
@@ -236,7 +238,8 @@ function NeverHideApp:onRoleCollisionGround()
             self.role:setRoleColor(colorID)
           elseif blockType == BlockData.WALLCONTROL then
             -- self.role:setRoleColor(colorID)
-            self.wallCloseSpeed = self.wallCloseSpeed * -1
+            -- self.wallCloseSpeed = self.wallCloseSpeed * -1
+            self:onGetWallControl(propID)
           end
 
 
@@ -266,6 +269,18 @@ function NeverHideApp:onRoleCollisionGround()
         self.role:setHSpeed(0)
      end
    end
+  end
+end
+
+function NeverHideApp:onGetWallControl(_propID)
+  _propID = tonumber(_propID)
+  if _propID == PROP_WALL_DOWN then
+      self.wallCloseSpeed = 2
+  elseif _propID == PROP_WALL_UP then
+      self.wallCloseSpeed = -2
+  elseif _propID == PROP_WALL_STOP then
+      self.wallCloseSpeed = 0
+
   end
 end
 
