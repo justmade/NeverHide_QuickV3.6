@@ -69,7 +69,6 @@ function TouchController:onRender()
 end
 
 function TouchController:onTouchHandler(event)
-  dump(event)
   local point
   local touchID
   for k,v in pairs(event.points) do

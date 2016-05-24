@@ -8,15 +8,22 @@ BlockData.CEIL = "ceil"
 
 BlockData.NORMAL = "normal"
 
-BlockData.DIAMOND = "diamond"
+BlockData.COLORCHANGE = "color_change"
 
 BlockData.WALLCONTROL = "wall_control"
 
 
-function BlockData:ctor (rect , type , colorID , tiledID)
+function BlockData:ctor (rect , type , dataInfo , tiledID)
     self.blockRect = rect
     self.blockType = type
-    self.colorID   = tonumber(colorID)
+    if dataInfo.colorID then
+        self.colorID = tonumber(dataInfo.colorID)
+    else
+        self.colorID = 0
+    end
+
+
+    self.propID    = dataInfo.id
     self.tiledID   = tiledID
 
     local tX   = self.tiledID % 7

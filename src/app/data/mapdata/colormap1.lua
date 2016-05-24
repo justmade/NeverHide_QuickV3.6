@@ -20,19 +20,20 @@ return {
       margin = 0,
       image = "../../../../res/gfx/colorsheet.png",
       imagewidth = 350,
-      imageheight = 50,
+      imageheight = 100,
       tileoffset = {
         x = 0,
         y = 0
       },
       properties = {},
       terrains = {},
-      tilecount = 7,
+      tilecount = 14,
       tiles = {
         {
           id = 0,
           properties = {
             ["colorID"] = "30001",
+            ["id"] = "10100",
             ["type"] = "block"
           }
         },
@@ -40,6 +41,7 @@ return {
           id = 1,
           properties = {
             ["colorID"] = "30002",
+            ["id"] = "10101",
             ["type"] = "block"
           }
         },
@@ -47,6 +49,7 @@ return {
           id = 2,
           properties = {
             ["colorID"] = "30003",
+            ["id"] = "10102",
             ["type"] = "block"
           }
         },
@@ -54,6 +57,7 @@ return {
           id = 3,
           properties = {
             ["colorID"] = "30003",
+            ["id"] = "10200",
             ["type"] = "color_change"
           }
         },
@@ -61,6 +65,7 @@ return {
           id = 4,
           properties = {
             ["colorID"] = "30002",
+            ["id"] = "10201",
             ["type"] = "color_change"
           }
         },
@@ -68,13 +73,28 @@ return {
           id = 5,
           properties = {
             ["colorID"] = "30001",
+            ["id"] = "10202",
             ["type"] = "color_change"
           }
         },
         {
           id = 6,
           properties = {
-            ["colorID"] = "30004",
+            ["id"] = "10203",
+            ["type"] = "wall_control"
+          }
+        },
+        {
+          id = 7,
+          properties = {
+            ["id"] = "10204",
+            ["type"] = "wall_control"
+          }
+        },
+        {
+          id = 8,
+          properties = {
+            ["id"] = "10205",
             ["type"] = "wall_control"
           }
         }

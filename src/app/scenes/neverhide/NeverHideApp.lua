@@ -170,14 +170,14 @@ function NeverHideApp:findGround()
           local bd
           local itemInfo = self.itemInfo[v..""]
           if self.downGroundRects[index % self.levelWidth +1 ] == nil and itemInfo.type == "block" then
-            bd = BlockData.new(r,BlockData.GROUND,itemInfo.colorID,tiledId);
+            bd = BlockData.new(r,BlockData.GROUND,itemInfo,tiledId);
             self.downGroundRects[index % self.levelWidth +1] = bd
           elseif itemInfo.type == "color_change" then
-            bd = BlockData.new(r,BlockData.DIAMOND,itemInfo.colorID,tiledId)
+            bd = BlockData.new(r,BlockData.COLORCHANGE,itemInfo,tiledId)
           elseif itemInfo.type == "wall_control" then
-            bd = BlockData.new(r,BlockData.WALLCONTROL,itemInfo.colorID,tiledId)
+            bd = BlockData.new(r,BlockData.WALLCONTROL,itemInfo,tiledId)
           else
-            bd = BlockData.new(r,BlockData.NORMAL,itemInfo.colorID,tiledId);
+            bd = BlockData.new(r,BlockData.NORMAL,itemInfo,tiledId);
           end
           table.insert(self.allGroundRects , bd)
           self.renderContainer:addChild(bd)
@@ -197,7 +197,7 @@ function NeverHideApp:findUpGround()
         local r    = cc.rect(posX,posY,self.cellGap,self.cellGap)
         local tiledId   = v - 1;
         local itemInfo = self.itemInfo[v..""]
-        local bd = BlockData.new(r,BlockData.CEIL,itemInfo.colorID,tiledId);
+        local bd = BlockData.new(r,BlockData.CEIL,itemInfo,tiledId);
         self.upGroundRects[index % self.levelWidth +1] = bd
         table.insert(self.upAllGroundRects , bd)
         self.renderContainer:addChild(bd)
@@ -231,8 +231,8 @@ function NeverHideApp:onRoleCollisionGround()
     if colorID ~= self.role.colorID then
       local state = Collision.rectIntersectsRect(cc.rect(self.role:getPositionX() - 20 , self.role:getPositionY() - 5 , 40,30),blockRect)
       --与道具的碰撞检测
-      if state ~= "nothing" and (blockType == BlockData.DIAMOND or blockType == BlockData.WALLCONTROL) then
-          if blockType == BlockData.DIAMOND then
+      if state ~= "nothing" and (blockType == BlockData.COLORCHANGE or blockType == BlockData.WALLCONTROL) then
+          if blockType == BlockData.COLORCHANGE then
             self.role:setRoleColor(colorID)
           elseif blockType == BlockData.WALLCONTROL then
             -- self.role:setRoleColor(colorID)
