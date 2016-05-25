@@ -13,6 +13,8 @@ function MainScene:ctor()
     --     :addTo(self)
     --
     -- -- add play button
+
+
     -- local playButton = cc.MenuItemImage:create("PlayButton.png", "PlayButton.png")
     --     :onClicked(function()
     --         self:getApp():enterScene("PlayScene")
@@ -31,8 +33,9 @@ function MainScene:ctor()
   --  local n = require("app.scenes.neverhide.NeverHideApp"):new();
   print("main")
   -- display.replaceScene()
-  self:addChild(NeverHideApp:new())
-
+  -- self:addChild(NeverHideApp:new())
+  local gameScene = require("app.scenes.neverhide.ChapterScene"):new()
+  display.replaceScene(gameScene , "fade" , 0.5 , cc.c3b(0,0,0))
 end
 
 return MainScene

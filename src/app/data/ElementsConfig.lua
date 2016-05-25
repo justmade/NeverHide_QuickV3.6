@@ -7,3 +7,4 @@ PROP_COLOR_CHANGE_BLUE  = 10202
 PROP_WALL_DOWN          = 10203
 PROP_WALL_UP            = 10204
 PROP_WALL_STOP          = 10205
+EXIT                    = 10300

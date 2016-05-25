@@ -12,7 +12,7 @@ end
 function MyApp:run()
 	print("run")
     cc.FileUtils:getInstance():addSearchPath("res/")
-    self:enterScene("MainScene")
+    self:enterScene("neverhide.ChapterScene")
 end
 
 return MyApp

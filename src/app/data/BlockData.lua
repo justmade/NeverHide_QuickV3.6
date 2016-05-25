@@ -12,6 +12,8 @@ BlockData.COLORCHANGE = "color_change"
 
 BlockData.WALLCONTROL = "wall_control"
 
+BlockData.EXIT  = "exit"
+
 
 function BlockData:ctor (rect , type , dataInfo , tiledID)
     self.blockRect = rect

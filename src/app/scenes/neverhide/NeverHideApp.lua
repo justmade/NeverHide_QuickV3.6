@@ -13,7 +13,7 @@ local BlockData   = require("app.data.BlockData")
 require("app.data.ElementsConfig")
 
 
-function NeverHideApp:ctor()
+function NeverHideApp:ctor(_o , _chapterIndex)
     self.safeArea  = {}
     self.speed     = 2
     self.cellGap   = 50
@@ -24,7 +24,7 @@ function NeverHideApp:ctor()
     self.upData = {}
     self.downData = {}
     self.downSpeed = 3;
-    self.currentLevel = 2;
+    self.currentLevel = _chapterIndex;
     self.playerSpeed = Vector2D.new(5,0)
     self.moveSpeed = Vector2D.new(0,0)
     self.wallCloseSpeed = 2
@@ -408,8 +408,6 @@ function NeverHideApp:update(dt)
   if self:checkGoundHit() then
       print("checkGoundHit")
       self:unscheduleUpdate()
-      self.currentLevel = self.currentLevel + 1
-      if   self.currentLevel > 2 then  self.currentLevel = 1 end
       self:resetMap()
   end
   self:onRoleCollisionGround();
@@ -461,6 +459,11 @@ function NeverHideApp:checkGoundHit()
     return false
 end
 
+
+function NeverHideApp:destroy()
+    self:removeAllChildren()
+    display.replaceScene(require("app.scenes.neverhide.ChapterScene"):new() , "fade" , 0.5 , cc.c3b(0,0,0))
+end
 
 
 
