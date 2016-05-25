@@ -50,7 +50,7 @@ function TouchController:ctor()
           if e.code == 59 then
               self.jumpVec.y = 20
           end
-    
+
           if e.code == 26 then
             self.state = "left"
           elseif e.code == 27 then
@@ -65,7 +65,7 @@ function TouchController:onRender()
   elseif self.state == "left" then
      self.moveVec.x = -1
   elseif self.state == "jump" then
-  
+
   end
 end
 
@@ -97,12 +97,8 @@ function TouchController:onTouchHandler(event)
   if cc.rectContainsPoint(jumpRect , cc.p(point.x , point.y)) then
     self.jumpID = touchID
   end
-  print("self.jumpID",self.jumpID)
-  print("self.moveID",self.moveID)
-  print("touchID",touchID)
   if event.name == "began" or event.name == "added" then
     if self.jumpID == touchID then
-      print("jump")
       self.jumpID = -1
       self.jumpVec.y = 20
     end

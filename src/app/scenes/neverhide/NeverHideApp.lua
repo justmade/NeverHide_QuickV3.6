@@ -177,6 +177,8 @@ function NeverHideApp:findGround()
             bd = BlockData.new(r,BlockData.COLORCHANGE,itemInfo,tiledId)
           elseif itemInfo.type == "wall_control" then
             bd = BlockData.new(r,BlockData.WALLCONTROL,itemInfo,tiledId)
+          elseif itemInfo.type == "exit" then
+            bd = BlockData.new(r,BlockData.EXIT,itemInfo,tiledId)
           else
             bd = BlockData.new(r,BlockData.NORMAL,itemInfo,tiledId);
           end
@@ -233,15 +235,16 @@ function NeverHideApp:onRoleCollisionGround()
     if colorID ~= self.role.colorID then
       local state = Collision.rectIntersectsRect(cc.rect(self.role:getPositionX() - 20 , self.role:getPositionY() - 5 , 40,30),blockRect)
       --与道具的碰撞检测
-      if state ~= "nothing" and (blockType == BlockData.COLORCHANGE or blockType == BlockData.WALLCONTROL) then
+      if state ~= "nothing" and self:collisionItem(blockType) then
           if blockType == BlockData.COLORCHANGE then
             self.role:setRoleColor(colorID)
           elseif blockType == BlockData.WALLCONTROL then
-            -- self.role:setRoleColor(colorID)
-            -- self.wallCloseSpeed = self.wallCloseSpeed * -1
             self:onGetWallControl(propID)
+          elseif blockType == BlockData.EXIT then
+            self:unscheduleUpdate()
+            self:destroy()
+            return true
           end
-
 
           table.remove(self.allGroundRects,i)
           self.renderContainer:removeChild(v)
@@ -270,6 +273,13 @@ function NeverHideApp:onRoleCollisionGround()
      end
    end
   end
+end
+
+--碰撞到的是不是道具
+function NeverHideApp:collisionItem(_blockType)
+  return _blockType == BlockData.COLORCHANGE
+   or _blockType == BlockData.WALLCONTROL
+   or _blockType == BlockData.EXIT
 end
 
 function NeverHideApp:onGetWallControl(_propID)
@@ -410,7 +420,10 @@ function NeverHideApp:update(dt)
       self:unscheduleUpdate()
       self:resetMap()
   end
-  self:onRoleCollisionGround();
+
+  if self:onRoleCollisionGround() then
+    return
+  end
   local mV = self.touchController.moveVec;
   local jV = self.touchController.jumpVec
   self.role:applyFroce(jV)
