@@ -6,14 +6,16 @@ local scheduler   = cc.Scheduler
 local Role        = require("app.scenes.neverhide.Role")
 local PosInfo     = require("app.scenes.neverhide.PosInfo")
 local BloodEffect = require("app.scenes.neverhide.HeroUpgradeEffect")
-local Vector2D    = require("app.scenes.neverhide.Vector2D")
 local TouchController = import(".TouchController")
 local Collision   = require("app.data.Collision")
 local BlockData   = require("app.data.BlockData")
+local MapView     = require("app.scenes.neverhide.map.MapView")
+local CameraView  = require("app.scenes.neverhide.camera.CameraView")
 require("app.data.ElementsConfig")
 
 
 function NeverHideApp:ctor(_o , _chapterIndex)
+    math.randomseed(os.time())
     self.safeArea  = {}
     self.speed     = 2
     self.cellGap   = 50
@@ -25,8 +27,8 @@ function NeverHideApp:ctor(_o , _chapterIndex)
     self.downData = {}
     self.downSpeed = 3;
     self.currentLevel = _chapterIndex;
-    self.playerSpeed = Vector2D.new(5,0)
-    self.moveSpeed = Vector2D.new(0,0)
+    self.playerSpeed = cc.p(5,0)
+    self.moveSpeed = cc.p(0,0)
     self.wallCloseSpeed = 2
     --天花板下降的距离
     self.ceilOffset = 0;
@@ -36,26 +38,24 @@ function NeverHideApp:ctor(_o , _chapterIndex)
 end
 
 function NeverHideApp:onEnter()
+  self.cameraView = CameraView.new()
+  self.mapView = MapView.new(self.cameraView)
+  self:addChild(self.mapView)
 
-
-  math.randomseed(os.time())
   local bg = display.newSprite("gfx/bg.png")
-  self:addChild(bg)
+  self.mapView:addBackground(bg)
   bg:setAnchorPoint(cc.p(0,0))
 
   local r = Role.new(40,300);
-
   self.role = r
 
-  self.downContainer = display.newSprite();
-  self.upContainer = display.newSprite();
-
-  self:addChild(self.upContainer);
-  self:addChild(self.downContainer);
+  self.cameraView:track(self.role)
 
   self.renderContainer = display.newLayer();
-  self:addChild(self.renderContainer)
-  self:addChild(r)
+  -- self:addChild(self.renderContainer)
+  self.mapView:addMidground(self.renderContainer)
+  -- self:addChild(r)
+  self.mapView:addMidground(r)
   self:resetMap()
   self:addTouchListener()
 
@@ -64,8 +64,6 @@ end
 --读取新的地图
 function NeverHideApp:resetMap()
   self.renderContainer:removeAllChildren()
-  self.downContainer:removeAllChildrenWithCleanup(true)
-  self.upContainer:removeAllChildrenWithCleanup(true)
   local MapInfo     = require("app.data.mapdata.colormap"..self.currentLevel)
   --获取tield地图
   local t = MapInfo.layers
@@ -73,8 +71,6 @@ function NeverHideApp:resetMap()
   self.downData = self:deepcopy(t[2].data);
   self.levelWidth = t[1].width;
   self.levelHeight = t[1].height;
-  -- self:drawTiledMap(self.upData , self.upContainer);
-  -- self:drawTiledMap(self.downData , self.downContainer);
   self:resolvingPro(MapInfo.tilesets)
   self:findGround()
   self:findUpGround();
@@ -130,31 +126,12 @@ end
 
 function NeverHideApp:resetUpGround()
   self.ceilOffset = 0
-  self.upContainer:setPositionY(self.levelHeight * self.cellGap);
   for i,v in ipairs(self.upAllGroundRects) do
     local rect = v:getRect()
     rect.y =  rect.y +self.levelHeight * self.cellGap
   end
 end
 
---根据tiled地图绘制
-function NeverHideApp:drawTiledMap(data,container)
-  for i,v in ipairs(data) do
-    if v ~= 0 then
-      local id = v-1;
-      local index = i-1;
-      local posX = (index % self.levelWidth) * self.cellGap
-      local posY = self.levelHeight * self.cellGap -  math.floor(index / self.levelWidth) * self.cellGap - self.cellGap
-      local tX   = id % 7
-      local tY   = math.floor(id / 7)
-      local grassLeft = display.newSprite("gfx/colorsheet.png")
-      grassLeft:setTextureRect(cc.rect(tX * (self.cellGap) , tY *(self.cellGap) ,self.cellGap,self.cellGap));
-      grassLeft:setPosition(posX,posY)
-      grassLeft:setAnchorPoint(cc.p(0,0))
-      container:addChild(grassLeft);
-    end
-  end
-end
 
 --找到下层的路面
 function NeverHideApp:findGround()
@@ -220,7 +197,7 @@ end
 
 --人物与障碍碰撞
 function NeverHideApp:onRoleCollisionGround()
-  self.role:applyFroce(Vector2D.new(0,-2))
+  self.role:applyFroce(cc.p(0,-2))
   --上下左右 用于标记那个方向上已经进行过碰撞检测了
   local collisionState = {0,0,0,0}
 
@@ -259,16 +236,16 @@ function NeverHideApp:onRoleCollisionGround()
         -- print("state",state,i);
         collisionState[1] = 1
         self.role.speed.y = 0
-        self.role:applyFroce(Vector2D.new(0,2))
+        self.role:applyFroce(cc.p(0,2))
         local rX = self.role:getPositionX()
         self.role:setPosY(blockRect.y + blockRect.height)
       elseif state == "left" and collisionState[3] ~= 1 then
         collisionState[3] = 1
-        self.role:applyFroce(Vector2D.new(-5,0))
+        self.role:applyFroce(cc.p(-5,0))
         self.role:setHSpeed(0)
       elseif state == "right" and collisionState[4] ~= 1 then
         collisionState[4] = 1
-        self.role:applyFroce(Vector2D.new(5,0))
+        self.role:applyFroce(cc.p(5,0))
         self.role:setHSpeed(0)
      end
    end
@@ -349,16 +326,16 @@ function NeverHideApp:onRoleCollisionCeil()
         if state == "bottom" and collisionState[1] ~= 1 then
           collisionState[1] = 1
           self.role.speed.y = 0
-          self.role:applyFroce(Vector2D.new(0,-3))
+          self.role:applyFroce(cc.p(0,-3))
           -- local rX = self.role:getPositionX()
           -- self.role:setPosY(blockRect.y + blockRect.height)
         elseif state == "left" and collisionState[3] ~= 1 then
           collisionState[3] = 1
-          self.role:applyFroce(Vector2D.new(-5,0))
+          self.role:applyFroce(cc.p(-5,0))
           self.role:setHSpeed(0)
         elseif state == "right" and collisionState[4] ~= 1 then
           collisionState[4] = 1
-          self.role:applyFroce(Vector2D.new(5,0))
+          self.role:applyFroce(cc.p(5,0))
           self.role:setHSpeed(0)
        end
     end
@@ -403,6 +380,8 @@ function NeverHideApp:setRoleByPosX(posx)
 end
 
 function NeverHideApp:update(dt)
+  self.cameraView:onRender()
+  self.mapView:onRender()
   self.touchController:onRender()
   local isHit = self:onRoleCollisionCeil(self.role)
   --

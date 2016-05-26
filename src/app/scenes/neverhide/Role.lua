@@ -2,14 +2,13 @@ local Role = class("Role", function()
     return display.newNode("Role")
 end)
 
-local Vector2D = require("app.scenes.neverhide.Vector2D")
 
 function Role:ctor(x,y,mass)
-  self.position = Vector2D.new(x,y)
+  self.position = cc.p(x,y)
   self.mass     = 1
 
-  self.speed    = Vector2D.new(0,0);
-	self.acceleration = Vector2D.new(0,0);
+  self.speed    = cc.p(0,0);
+	self.acceleration = cc.p(0,0);
 
 
 
@@ -60,11 +59,11 @@ function Role:onUpdate()
     self.speed.x = -5;
   end
 
-  self.position:add(self.speed)
+  self.position = cc.pAdd(self.position , self.speed)
   self:setPositionX(self.position.x)
   self:setPositionY(self.position.y)
   -- print("pos",self.position.y)
-  self.acceleration:mult(0)
+  self.acceleration = cc.pMul(self.acceleration , 0)
   self:checkBoundary()
 end
 
@@ -89,7 +88,7 @@ end
 --给外力
 function Role:applyFroce(v)
   -- print("applyFroce",v.y)
-  self.acceleration:add(v)
+  self.acceleration = cc.pAdd(self.acceleration , v)
 end
 
 --设置水平方向的速度
@@ -108,6 +107,10 @@ end
 
 function Role:getHeight()
     return self.height
+end
+
+function Role:getLocation()
+  return self.position
 end
 
 --移动的边界
