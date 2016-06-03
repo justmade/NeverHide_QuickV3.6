@@ -30,6 +30,8 @@ function MapView:onRender()
   local cx = self.cameraView.location.x
   local cy = self.cameraView.location.y
   self:setPosition(-cx , -cy)
+
+  self.backGround:setPosition(cx,cy)
 end
 
 return MapView

@@ -26,14 +26,14 @@ function CameraView:onRender()
   self.location.y = p.y - self.cameraSize.height/2;
   if self.location.x < 0 then
     self.location.x = 0
-  elseif  self.location.x > display.width then
-    self.location.x =  display.width
+    elseif  self.location.x > self.cameraSize.width - display.width then
+    self.location.x =  self.cameraSize.width - display.width
   end
 
   if self.location.y < 0 then
     self.location.y = 0
-  elseif self.location.y > display.height then
-      self.location.y = display.height
+  elseif self.location.y > self.cameraSize.height then
+      self.location.y = self.cameraSize.height
   end
 end
 

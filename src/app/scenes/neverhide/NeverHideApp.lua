@@ -18,7 +18,7 @@ function NeverHideApp:ctor(_o , _chapterIndex)
     math.randomseed(os.time())
     self.safeArea  = {}
     self.speed     = 2
-    self.cellGap   = 50
+    self.cellGap   = 62
     --存储所有生成的矩形
     self.allPos    = {}
     self.levelWidth = 0
@@ -33,7 +33,6 @@ function NeverHideApp:ctor(_o , _chapterIndex)
     --天花板下降的距离
     self.ceilOffset = 0;
 
-    self:onEnter();
 
 end
 
@@ -51,10 +50,9 @@ function NeverHideApp:onEnter()
 
   self.cameraView:track(self.role)
 
+
   self.renderContainer = display.newLayer();
-  -- self:addChild(self.renderContainer)
   self.mapView:addMidground(self.renderContainer)
-  -- self:addChild(r)
   self.mapView:addMidground(r)
   self:resetMap()
   self:addTouchListener()
@@ -71,6 +69,10 @@ function NeverHideApp:resetMap()
   self.downData = self:deepcopy(t[2].data);
   self.levelWidth = t[1].width;
   self.levelHeight = t[1].height;
+
+  local mapSize = cc.rect(0,0,self.levelWidth * self.cellGap , self.levelHeight * self.cellGap)
+  self.cameraView:setCameraSize(mapSize)
+  self.role:setBoundarySize(mapSize)
   self:resolvingPro(MapInfo.tilesets)
   self:findGround()
   self:findUpGround();
@@ -81,8 +83,9 @@ function NeverHideApp:resetMap()
     return a:getRect().x < b:getRect().x
   end
 
-  table.sort(self.downGroundRects , sortRectByPosX)
   table.sort(self.upGroundRects , sortRectByPosX)
+  table.sort(self.downGroundRects , sortRectByPosX)
+
   self.role:setPosX(40)
   self.role:setPosY(300)
   self.role:setRoleColor(30003)
@@ -121,7 +124,6 @@ function NeverHideApp:resolvingPro(_info)
       self.itemInfo[(v.id+1)..""][k] = m
     end
   end
-  dump(self.itemInfo)
 end
 
 function NeverHideApp:resetUpGround()

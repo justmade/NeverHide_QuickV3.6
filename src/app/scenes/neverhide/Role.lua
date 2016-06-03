@@ -8,8 +8,8 @@ function Role:ctor(x,y,mass)
   self.mass     = 1
 
   self.speed    = cc.p(0,0);
-	self.acceleration = cc.p(0,0);
-
+  self.acceleration = cc.p(0,0);
+  self.boundary = cc.rect(0,0,display.width , display.height)
 
 
   -- local drawSp = display.newDrawNode()
@@ -113,12 +113,16 @@ function Role:getLocation()
   return self.position
 end
 
+function Role:setBoundarySize(size)
+    self.boundary = size
+end
+
 --移动的边界
 function Role:checkBoundary()
   if self.position.x  < 0 then
       self.position.x = 0
-  elseif self.position.x > display.width - 50 then
-    self.position.x = display.width - 50
+  elseif self.position.x > self.boundary.width - 50 then
+    self.position.x = self.boundary.width - 50
   end
 end
 

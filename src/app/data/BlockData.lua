@@ -18,6 +18,7 @@ BlockData.EXIT  = "exit"
 function BlockData:ctor (rect , type , dataInfo , tiledID)
     self.blockRect = rect
     self.blockType = type
+    self.cellGap = 64
     if dataInfo.colorID then
         self.colorID = tonumber(dataInfo.colorID)
     else
@@ -31,8 +32,8 @@ function BlockData:ctor (rect , type , dataInfo , tiledID)
     local tX   = self.tiledID % 7
     local tY   = math.floor(self.tiledID / 7)
 
-    local grass = display.newSprite("gfx/colorsheet.png")
-    grass:setTextureRect(cc.rect(tX * (50) , tY *(50) ,50,50));
+    local grass = display.newSprite("gfx/sheet-2.png")
+    grass:setTextureRect(cc.rect(tX * (self.cellGap + 2) , tY *(self.cellGap + 2) ,self.cellGap,self.cellGap));
     grass:setPosition(self.blockRect.x ,self.blockRect.y)
     grass:setAnchorPoint(cc.p(0,0))
     self:addChild(grass);
