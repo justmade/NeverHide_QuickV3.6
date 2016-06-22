@@ -30,6 +30,13 @@
     <property name="type" value="block"/>
    </properties>
   </tile>
+  <tile id="4">
+   <properties>
+    <property name="colorID" value="0"/>
+    <property name="id" value="10400"/>
+    <property name="type" value="pin"/>
+   </properties>
+  </tile>
   <tile id="5">
    <properties>
     <property name="colorID" value="30000"/>
@@ -105,6 +112,27 @@
     <property name="colorID" value="30000"/>
     <property name="id" value="10170"/>
     <property name="type" value="block"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="colorID" value="0"/>
+    <property name="id" value="10401"/>
+    <property name="type" value="pin"/>
+   </properties>
+  </tile>
+  <tile id="23">
+   <properties>
+    <property name="colorID" value="0"/>
+    <property name="id" value="10402"/>
+    <property name="type" value="half_pin"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="colorID" value="0"/>
+    <property name="id" value="10403"/>
+    <property name="type" value="half_pin"/>
    </properties>
   </tile>
   <tile id="25">
@@ -741,7 +769,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="23"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="31"/>
@@ -750,7 +778,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="25"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="9"/>

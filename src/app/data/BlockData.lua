@@ -2,17 +2,14 @@ local BlockData = class("BlockData",function()
     return display.newNode("BlockData")
 end)
 
-BlockData.GROUND = "ground"
-
-BlockData.CEIL = "ceil"
-
-BlockData.NORMAL = "normal"
-
-BlockData.COLORCHANGE = "color_change"
-
-BlockData.WALLCONTROL = "wall_control"
-
-BlockData.EXIT  = "exit"
+BlockData.GROUND        = "ground"
+BlockData.CEIL          = "ceil"
+BlockData.NORMAL        = "normal"
+BlockData.COLORCHANGE   = "color_change"
+BlockData.WALLCONTROL   = "wall_control"
+BlockData.EXIT          = "exit"
+BlockData.PIN           = "pin"
+BlockData.HALFPIN       = "half_pin"
 
 
 function BlockData:ctor (rect , type , dataInfo , tiledID)
@@ -31,6 +28,8 @@ function BlockData:ctor (rect , type , dataInfo , tiledID)
 
     local tX   = self.tiledID % 7
     local tY   = math.floor(self.tiledID / 7)
+
+    print("tiledID:",tiledID)
 
     local grass = display.newSprite("gfx/sheet-2.png")
     grass:setTextureRect(cc.rect(tX * (self.cellGap + 2) , tY *(self.cellGap + 2) ,self.cellGap,self.cellGap));

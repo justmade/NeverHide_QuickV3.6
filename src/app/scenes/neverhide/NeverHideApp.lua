@@ -61,6 +61,7 @@ end
 
 --读取新的地图
 function NeverHideApp:resetMap()
+    print("========reset==========")
   self.renderContainer:removeAllChildren()
   local MapInfo     = require("app.data.mapdata.colormap"..self.currentLevel)
   --获取tield地图
@@ -150,14 +151,18 @@ function NeverHideApp:findGround()
           local bd
           local itemInfo = self.itemInfo[v..""]
           if self.downGroundRects[index % self.levelWidth +1 ] == nil and itemInfo.type == "block" then
-            bd = BlockData.new(r,BlockData.GROUND,itemInfo,tiledId);
+              bd = BlockData.new(r,BlockData.GROUND,itemInfo,tiledId);
             self.downGroundRects[index % self.levelWidth +1] = bd
           elseif itemInfo.type == "color_change" then
-            bd = BlockData.new(r,BlockData.COLORCHANGE,itemInfo,tiledId)
+              bd = BlockData.new(r,BlockData.COLORCHANGE,itemInfo,tiledId)
           elseif itemInfo.type == "wall_control" then
-            bd = BlockData.new(r,BlockData.WALLCONTROL,itemInfo,tiledId)
+              bd = BlockData.new(r,BlockData.WALLCONTROL,itemInfo,tiledId)
           elseif itemInfo.type == "exit" then
-            bd = BlockData.new(r,BlockData.EXIT,itemInfo,tiledId)
+              bd = BlockData.new(r,BlockData.EXIT,itemInfo,tiledId)
+          elseif itemInfo.type == "half_pin" then
+              bd = BlockData.new(r,BlockData.HALFPIN,itemInfo,tiledId)
+          elseif itemInfo.type == "pin" then
+              bd = BlockData.new(r,BlockData.PIN,itemInfo,tiledId)
           else
             bd = BlockData.new(r,BlockData.NORMAL,itemInfo,tiledId);
           end
@@ -179,7 +184,14 @@ function NeverHideApp:findUpGround()
         local r    = cc.rect(posX,posY,self.cellGap,self.cellGap)
         local tiledId   = v - 1;
         local itemInfo = self.itemInfo[v..""]
-        local bd = BlockData.new(r,BlockData.CEIL,itemInfo,tiledId);
+        local bd
+        if itemInfo.type == "half_pin" then
+            bd = BlockData.new(r,BlockData.HALFPIN,itemInfo,tiledId)
+        elseif itemInfo.type == "pin" then
+            bd = BlockData.new(r,BlockData.PIN,itemInfo,tiledId)
+        else
+            bd = BlockData.new(r,BlockData.CEIL,itemInfo,tiledId);
+        end
         self.upGroundRects[index % self.levelWidth +1] = bd
         table.insert(self.upAllGroundRects , bd)
         self.renderContainer:addChild(bd)
@@ -215,15 +227,19 @@ function NeverHideApp:onRoleCollisionGround()
       local state = Collision.rectIntersectsRect(cc.rect(self.role:getPositionX() - 20 , self.role:getPositionY() - 5 , 40,30),blockRect)
       --与道具的碰撞检测
       if state ~= "nothing" and self:collisionItem(blockType) then
-          if blockType == BlockData.COLORCHANGE then
-            self.role:setRoleColor(colorID)
-          elseif blockType == BlockData.WALLCONTROL then
-            self:onGetWallControl(propID)
-          elseif blockType == BlockData.EXIT then
-            self:unscheduleUpdate()
-            self:destroy()
-            return true
-          end
+            if blockType == BlockData.COLORCHANGE then
+                self.role:setRoleColor(colorID)
+            elseif blockType == BlockData.WALLCONTROL then
+                self:onGetWallControl(propID)
+            elseif blockType == BlockData.EXIT then
+                self:unscheduleUpdate()
+                self:destroy()
+                return true
+            elseif blockType == BlockData.PIN or blockType == BlockData.HALFPIN then
+                self:unscheduleUpdate()
+                self:resetMap()
+                break
+            end
 
           table.remove(self.allGroundRects,i)
           self.renderContainer:removeChild(v)
@@ -259,6 +275,8 @@ function NeverHideApp:collisionItem(_blockType)
   return _blockType == BlockData.COLORCHANGE
    or _blockType == BlockData.WALLCONTROL
    or _blockType == BlockData.EXIT
+   or _blockType == BlockData.PIN
+   or _blockType == BlockData.HALFPIN
 end
 
 function NeverHideApp:onGetWallControl(_propID)
