@@ -1,5 +1,5 @@
 local Role = class("Role", function()
-    return display.newNode("Role")
+    return display.newSprite()
 end)
 
 
@@ -30,6 +30,13 @@ function Role:ctor(x,y,mass)
   eye:drawSolidCircle(cc.p(0,15),10,math.pi,20,cc.c4f(1,1,1,1))
   self.roleContainer:addChild(eye)
   self:addChild(self.roleContainer)
+
+  local body = cc.PhysicsBody:createBox(self:getContentSize() , cc.PhysicsMaterial(0, 0, 0))
+  body:setMass(0)
+  body:setDynamic(true);
+  body:setContactTestBitmask(0xFFFFFFFF)
+  self:setPhysicsBody(body)
+  self:setTag(1990)
 
   self.colorID = 30003;
 end

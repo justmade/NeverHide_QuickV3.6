@@ -1,5 +1,5 @@
 local NeverHideApp = class("NeverHideApp", function()
-    return display.newScene("NeverHideApp")
+    return display.newPhysicsScene("NeverHideApp")
 end)
 require("framework.init")
 local scheduler   = cc.Scheduler
@@ -15,6 +15,7 @@ require("app.data.ElementsConfig")
 
 
 function NeverHideApp:ctor(_o , _chapterIndex)
+    self:getPhysicsWorld():setGravity(cc.p(0,0))
     math.randomseed(os.time())
     self.safeArea  = {}
     self.speed     = 2
@@ -56,7 +57,7 @@ function NeverHideApp:onEnter()
   self.mapView:addMidground(r)
   self:resetMap()
   self:addTouchListener()
-
+  self:addListener()
 end
 
 --读取新的地图
@@ -181,7 +182,7 @@ function NeverHideApp:findUpGround()
         local index = i-1;
         local posX = (index % self.levelWidth) * self.cellGap
         local posY = self.levelHeight * self.cellGap -  math.floor(index / self.levelWidth) * self.cellGap - self.cellGap
-        local r    = cc.rect(posX,posY,self.cellGap,self.cellGap)
+        local r    = cc.rect(posX - self.cellGap / 2,posY - self.cellGap / 2,self.cellGap,self.cellGap)
         local tiledId   = v - 1;
         local itemInfo = self.itemInfo[v..""]
         local bd
@@ -392,7 +393,7 @@ function NeverHideApp:setRoleByPosX(posx)
 
   for i,v in ipairs(self.downGroundRects) do
     if posx <= (v.x + v.width) then
-        self.role:setPosY(v.y + v.height)
+        self.role:setPosY(v.y + v.height/2)
         -- print("setRoleByPosX" , v.y + v.height)
         break
     end
@@ -475,6 +476,23 @@ end
 function NeverHideApp:destroy()
     self:removeAllChildren()
     display.replaceScene(require("app.scenes.neverhide.ChapterScene"):new() , "fade" , 0.5 , cc.c3b(0,0,0))
+end
+
+function NeverHideApp:onContact(contact)
+
+    local tag = contact:getShapeA():getBody():getNode():getTag()
+    print(tag)
+    return true
+end
+
+function NeverHideApp:addListener()
+    local contactListener = cc.EventListenerPhysicsContact:create()
+    contactListener:registerScriptHandler(handler(self,self.onContact) , cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
+
+    local eventDispatcher = cc.Director:getInstance():getEventDispatcher()
+    eventDispatcher:addEventListenerWithFixedPriority(contactListener ,1)
+    self:getPhysicsWorld():setDebugDrawMask(cc.PhysicsWorld.DEBUGDRAW_ALL)
+
 end
 
 
