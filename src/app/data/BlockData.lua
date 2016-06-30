@@ -38,7 +38,15 @@ function BlockData:ctor (rect , type , dataInfo , tiledID)
     -- self:addChild(grass);
     -- self.grass = grass;
 
-    local body = cc.PhysicsBody:createBox(self:getContentSize() , cc.PhysicsMaterial(0, 0, 0))
+    -- local body = cc.PhysicsBody:createBox(self:getContentSize() , cc.PhysicsMaterial(0, 0, 0))
+    local body = self:pinBody()
+    if self.blockType == BlockData.PIN then
+        body = self:pinBody()
+    elseif self.blockType == BlockData.HALFPIN then
+        body = self:hPinBody()
+    else
+        body = self:rectBody()
+    end
     body:setMass(0)
     body:setDynamic(false);
     body:setContactTestBitmask(0xFFFFFFFF)
@@ -48,11 +56,20 @@ function BlockData:ctor (rect , type , dataInfo , tiledID)
 end
 
 function BlockData:pinBody()
+    local arr = {cc.p(-32,-32) , cc.p(0,32) , cc.p(32,-32)}
+    local coinBody = cc.PhysicsBody:createPolygon(arr)
+    return coinBody
+end
 
+function BlockData:rectBody()
+    local body = cc.PhysicsBody:createBox(self:getContentSize() , cc.PhysicsMaterial(0, 0, 0))
+    return body
 end
 
 function BlockData:hPinBody()
-    
+    local arr = {cc.p(-32,-32) , cc.p(-10,5) , cc.p(10,5), cc.p(32,-32)}
+    local coinBody = cc.PhysicsBody:createPolygon(arr)
+    return coinBody
 end
 
 
