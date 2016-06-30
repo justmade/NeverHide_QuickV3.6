@@ -225,6 +225,7 @@ function NeverHideApp:onRoleCollisionGround()
 
     --只检测颜色与主角不一样的情况
     if colorID ~= self.role.colorID then
+
       local state = Collision.rectIntersectsRect(cc.rect(self.role:getPositionX() - 20 , self.role:getPositionY() - 5 , 40,30),blockRect)
       --与道具的碰撞检测
       if state ~= "nothing" and self:collisionItem(blockType) then
@@ -480,8 +481,23 @@ end
 
 function NeverHideApp:onContact(contact)
 
+    local tag = contact:getShapeB():getBody():getNode():getTag()
+    print("B:",tag)
+
+     for i,v in ipairs(self.allGroundRects) do
+         if v == contact:getShapeB():getBody():getNode() then
+             print("fiiiinnddd")
+         end
+     end
+
     local tag = contact:getShapeA():getBody():getNode():getTag()
-    print(tag)
+    print("A:",tag)
+    for i,v in ipairs(self.allGroundRects) do
+        if v == contact:getShapeA():getBody():getNode() then
+            print("fiiiinnddd")
+        end
+    end
+
     return true
 end
 
